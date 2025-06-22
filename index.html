@@ -39,7 +39,7 @@
         <script>
         var map = L.map('map', {
             zoomControl:false, maxZoom:28, minZoom:1
-        }).fitBounds([[-4.247186987845204,33.49225177831844],[-1.3207041776624733,38.66124627811127]]);
+        }).fitBounds([[-4.3488701787727475,33.9133374808362],[-1.4228210628963283,39.08400654161497]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
@@ -278,10 +278,12 @@
         function pop_FLOURIDE_POINT_3(feature, layer) {
             var popupContent = '<table>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['id'] !== null ? autolinker.link(String(feature.properties['id']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <th scope="row">id</th>\
+                        <td class="visible-with-data" id="id">' + (feature.properties['id'] !== null ? autolinker.link(String(feature.properties['id']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <td colspan="2">' + (feature.properties['conc_level'] !== null ? autolinker.link(String(feature.properties['conc_level']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                        <th scope="row">conc_level</th>\
+                        <td class="visible-with-data" id="conc_level">' + (feature.properties['conc_level'] !== null ? autolinker.link(String(feature.properties['conc_level']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
@@ -445,6 +447,29 @@
             }  
         });       
         setBounds();
+        var i = 0;
+        layer_DISTRICTS_1.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['District_N'] !== null?String('<div style="color: #000000; font-size: 13pt; font-weight: bold; font-family: \'MS Shell Dlg 2\', sans-serif;">' + layer.feature.properties['District_N']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_DISTRICTS_1'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        resetLabels([layer_DISTRICTS_1]);
+        map.on("zoomend", function(){
+            resetLabels([layer_DISTRICTS_1]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_DISTRICTS_1]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_DISTRICTS_1]);
+        });
         </script>
     </body>
 </html>
